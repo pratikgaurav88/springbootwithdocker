@@ -1,0 +1,27 @@
+version: "3.8"
+services:  
+  database:
+    image: container-registry.oracle.com/database/enterprise:19.3.0.0
+    ports: 
+      - 1521:1521
+      - 5500:5500
+    environment:
+      - ORACLE_PWD:Welcome123#
+    volumes: 
+      - C:/oracleDB:/opt/oracle/oradata  
+      - C:/workspace/oracle-ws/docker-practice/student-service/scripts:/opt/oracle/scripts/setup 
+    networks:
+    - backend 
+  student: 
+    build: .
+    #image: student:1.0
+    ports:
+      - 8082:8082
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge        
